@@ -1,2 +1,2 @@
 # sansky-private-chat
-This is a project chosen for the Collaborative Work curse at the University IU 
+This is a project chosen for the Collaborative Work curse at the University IU International University of Applied Sciences. The project is a chat application that allows users to chat with each other in real-time, privately.
