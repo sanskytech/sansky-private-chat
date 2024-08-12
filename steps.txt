@@ -1,1 +1,5 @@
+completing the video about conflict of github
+seeing a video on git clone .. and creating repo and getting connecting to already connected repos 
+installing vs code (seeing vide about its tutorial)
+socket.io ( seeing video and searching about how it works)
 python 
