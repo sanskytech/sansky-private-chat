@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <title>Test client main page</title>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <h1>Sansky Private chat</h1>
+            
+            <!--  joining a group -->
+            <form  class="join">
+                <input type="text" id="username" placeholder="username"/>
+                <input type="text" id="group" placeholder="group"/>
+                <button id="login" onclick="login()">join</button>
+            </form>
+            <!--  generating a new group -->
+            <form class="generate-container">
+                <input type="text" id="group-name" placeholder="group name"/>
+                <input type="number" id="group-size" placeholder="group size"/>
+                <div id="generated-group"></div>
+                <button id="generate" onclick="generate()">generate a group</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
