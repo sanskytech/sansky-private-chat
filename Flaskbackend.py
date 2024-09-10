@@ -91,6 +91,45 @@ def room():
     return render_template("room.html")
 
 
+@socketio.on("connect")
+def connect(auth):
+    room=session.get("room")
+    name=session.get("name")
+    # here if the user is trying to get access to our rooms 
+    #with out being in the home page first 
+    if not room or not name:
+        return
+    #here if the user was in invalid room then it will direct the user
+    #to the outisde of the room
+    if room not in rooms:
+        leave_room(room)
+        return
+
+    join_room(room) 
+    # here after the person joins the room then there will be 
+    # a message sent to all of the users in the room 
+    # that says that hey mohammad has entered the room 
+    send({"name":name , "message":"has entered the room"}, to=room)
+    rooms[room]["members"] +=1
+    print(f"{name} joined the room {room}")
+
+
+@socketio.on("disconnect")
+def disconnect():
+    room=session.get("room")
+    name=session.get("name")
+    leave_room(room)
+
+    if room in rooms:
+        rooms[room]["members"] -=1
+        #if the number of people is 0 then we delete the room then
+        if rooms[room]["members"] <=0:
+            del rooms[room]
+    
+    #sending a message to room that user has left the room
+    send({"name":name , "message":"has left the room"}, to=room)
+    print(f"{name} has left the room {room}")
+    
 
 
 if __name__== "__main__":
