@@ -67,6 +67,7 @@ from flask import Flask, request, jsonify
 import hashlib
 import jwt
 import datetime
+import time
 
 # Create the Flask app
 app = Flask(__name__)
@@ -74,16 +75,21 @@ app = Flask(__name__)
 # Secret key for encoding JWT tokens
 app.config['SECRET_KEY'] = '123'
 
-# Helper function to generate user_id based on user input (e.g., name)
-def generate_user_id(name):
-    # Generate a unique user_id using a hash of the user's name
-    user_id = hashlib.md5(name.encode()).hexdigest()
+# the Secret KEY is abusrd 
+
+# Helper function to generate user_id based on user input (name + Group_Name + timestamp)
+def generate_user_id(name, group_name):
+    # Create a unique user_id by combining the name, Group_Name, and current timestamp
+    name_group_combination = name + group_name + str(time.time())
+    user_id = hashlib.md5(name_group_combination.encode()).hexdigest()
     return user_id
 
-# Helper function to generate a JWT token
-def generate_token(user_id):
+# Helper function to generate a JWT token, including name and Group_Name
+def generate_token(user_id, name, group_name):
     token = jwt.encode({
         'user_id': user_id,
+        'name': name,
+        'group_name': group_name,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expires in 1 hour
     }, app.config['SECRET_KEY'], algorithm='HS256')
     return token
@@ -95,35 +101,40 @@ def token_required(f):
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
         try:
+            # Decode the token and retrieve user data
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
             current_user_id = data['user_id']
+            current_group_name = data['group_name']
+            current_name = data['name']
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
-        return f(current_user_id, *args, **kwargs)
+        return f(current_user_id, current_group_name, current_name, *args, **kwargs)
     decorator.__name__ = f.__name__
     return decorator
 
-# Route to get token
+# Route to generate and return token
 @app.route('/get-token', methods=['POST'])
 def get_token():
-    # Expecting the user to send their name in the request body
+    # Expecting the user to send their name and Group_Name in the request body
     data = request.get_json()
     
     if 'name' not in data:
         return jsonify({'error': 'Name is required'}), 400
+    if 'Group_Name' not in data:
+        return jsonify({'error': 'Group_Name is required'}), 400
 
-    # Generate user_id from the name
-    user_id = generate_user_id(data['name'])
+    # Generate user_id from the name and Group_Name
+    user_id = generate_user_id(data['name'], data['Group_Name'])
     
     # Generate a token for this user
-    token = generate_token(user_id)
+    token = generate_token(user_id, data['name'], data['Group_Name'])
     
     return jsonify({'token': token, 'user_id': user_id}), 200
 
-# Protected route example
+# Protected route to get user data, ensuring the user_id in the token matches the URL user_id
 @app.route('/get-user/<user_id>', methods=['GET'])
 @token_required
-def get_user(current_user_id, user_id):
+def get_user(current_user_id, current_group_name, current_name, user_id):
     # Ensure that the user_id in the URL matches the current authenticated user_id from the token
     if current_user_id != user_id:
         return jsonify({'error': 'Unauthorized access to user data'}), 403
@@ -131,8 +142,8 @@ def get_user(current_user_id, user_id):
     # Sample user data to return
     user_data = {
         "user_id": user_id,
-        "name": "John Doe",
-        "email": "john.doe@example.com"
+        "name": current_name,
+        "group_name": current_group_name
     }
     
     # Add any extra query parameters if provided
@@ -142,10 +153,10 @@ def get_user(current_user_id, user_id):
     
     return jsonify(user_data), 200
 
-# Example protected route to create user (just a demo for protected routes)
+# Example protected route to create a user (just a demo for protected routes)
 @app.route('/create-user', methods=['POST'])
 @token_required
-def create_user(current_user_id):
+def create_user(current_user_id, current_group_name, current_name):
     if request.is_json:
         data = request.get_json()
         
@@ -157,4 +168,4 @@ def create_user(current_user_id):
         return jsonify({"error": "Request must be JSON"}), 400
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
