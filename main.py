@@ -11,9 +11,13 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 # Create the Flask app
 app = Flask(__name__)
+
+# Set the secret key for JWT encoding
+app.config['SECRET_KEY'] = secrets.token_hex(32)  # Random secret key
 
 # Generate RSA keys for JWE
 private_key = rsa.generate_private_key(
@@ -23,36 +27,38 @@ private_key = rsa.generate_private_key(
 )
 public_key = private_key.public_key()
 
-# Helper function to combine PBKDF2 and Argon2 to derive a secure key
-def derive_key(passphrase, salt=None):
-    # Generate a salt if one is not provided
-    if salt is None:
-        salt = os.urandom(32)  # Use 32 bytes for salt
+# Helper function to generate a random AES key (256 bits)
+def generate_aes_key():
+    return os.urandom(32)  # 256-bit AES key
 
-    # Step 1: Apply PBKDF2
-    pbkdf2_key = hashlib.pbkdf2_hmac(
-        'sha256',              # Hash function
-        passphrase.encode(),    # Convert passphrase to bytes
-        salt,                  # Salt
-        100000,                # Number of iterations
-        dklen=32               # Length of the derived key (256 bits)
+# Function to encrypt data using AES
+def encrypt_with_aes(data, aes_key):
+    iv = os.urandom(16)  # 128-bit IV for AES
+    cipher = Cipher(algorithms.AES(aes_key), modes.CBC(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+    
+    # Ensure data is in bytes, encode if it's a string
+    if isinstance(data, str):
+        data = data.encode()
+
+    # Padding to ensure data length is a multiple of 16
+    padding_length = 16 - len(data) % 16
+    data += bytes([padding_length]) * padding_length
+    ciphertext = encryptor.update(data) + encryptor.finalize()
+    
+    return iv + ciphertext  # Return IV + ciphertext to allow decryption
+
+# Function to encrypt AES key using RSA
+def encrypt_aes_key_with_rsa(aes_key):
+    encrypted_aes_key = public_key.encrypt(
+        aes_key,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
     )
-
-    # Step 2: Apply Argon2 on the result from PBKDF2
-    ph = PasswordHasher(time_cost=2, memory_cost=51200, parallelism=8)
-    argon2_key = ph.hash(pbkdf2_key.hex())  # Argon2 processes the PBKDF2 key
-
-    return argon2_key, salt
-
-# Function to generate a secure random passphrase
-def generate_random_passphrase(length=32):
-    characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    passphrase = ''.join(secrets.choice(characters) for _ in range(length))
-    return passphrase
-
-# Generate a random passphrase for the secret key
-passphrase = generate_random_passphrase()
-app.config['SECRET_KEY'], _ = derive_key(passphrase)
+    return encrypted_aes_key
 
 # Helper function to generate user_id based on user input (name + Group_Name + timestamp)
 def generate_user_id(name, group_name):
@@ -60,7 +66,7 @@ def generate_user_id(name, group_name):
     user_id = hashlib.md5(name_group_combination.encode()).hexdigest()
     return user_id
 
-# Helper function to generate a JWT token and encrypt it using JWE
+# Function to generate a JWT token and encrypt it using AES
 def generate_token(user_id, name, group_name):
     token = jwt.encode({
         'user_id': user_id,
@@ -69,22 +75,14 @@ def generate_token(user_id, name, group_name):
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expires in 1 hour
     }, app.config['SECRET_KEY'], algorithm='HS256')
 
-    print(f"Generated JWT Token: {token}")  # Debugging line
-
-    try:
-        # Encrypt the token using the public key for JWE
-        encrypted_token = public_key.encrypt(
-            token.encode(),
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
-            )
-        )
-        return encrypted_token
-    except Exception as e:
-        print(f"Encryption failed: {e}")
-        return None
+    # Generate AES key and encrypt the token data
+    aes_key = generate_aes_key()
+    encrypted_token = encrypt_with_aes(token, aes_key)
+    
+    # Encrypt the AES key using RSA
+    encrypted_aes_key = encrypt_aes_key_with_rsa(aes_key)
+    
+    return encrypted_aes_key, encrypted_token
 
 # Middleware to protect routes
 def token_required(f):
@@ -93,15 +91,21 @@ def token_required(f):
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
         try:
-            # Decrypt the token using the private key
-            decrypted_token = private_key.decrypt(
-                token,
+            # Ensure the token is in bytes if it's in hex format
+            encrypted_token_bytes = bytes.fromhex(token)
+            
+            # Decrypt the AES key using RSA private key
+            decrypted_aes_key = private_key.decrypt(
+                encrypted_token_bytes,
                 padding.OAEP(
                     mgf=padding.MGF1(algorithm=hashes.SHA256()),
                     algorithm=hashes.SHA256(),
                     label=None
                 )
-            ).decode()
+            )
+            
+            # Decrypt the token using the decrypted AES key
+            decrypted_token = decrypt_with_aes(decrypted_aes_key, encrypted_token_bytes)
 
             # Decode the JWT token
             data = jwt.decode(decrypted_token, app.config['SECRET_KEY'], algorithms=['HS256'])
@@ -127,11 +131,13 @@ def get_token():
 
     user_id = generate_user_id(data['name'], data['Group_Name'])
     
-    token = generate_token(user_id, data['name'], data['Group_Name'])
-    if token is None:
-        return jsonify({'error': 'Failed to generate token'}), 500
-
-    return jsonify({'token': token.hex(), 'user_id': user_id}), 200
+    encrypted_aes_key, encrypted_token = generate_token(user_id, data['name'], data['Group_Name'])
+    
+    return jsonify({
+        'encrypted_aes_key': encrypted_aes_key.hex(), 
+        'encrypted_token': encrypted_token.hex(),
+        'user_id': user_id
+    }), 200
 
 # Protected route to get user data, ensuring the user_id in the token matches the URL user_id
 @app.route('/get-user/<user_id>', methods=['GET'])
@@ -161,6 +167,7 @@ def create_user(current_user_id, current_group_name, current_name):
         if "username" not in data:
             return jsonify({"error": "Missing 'username' key in JSON"}), 400
         
+        # You can add user creation logic here, such as saving the user in a database
         return jsonify({"message": "User created", "user_id": current_user_id, "data": data}), 201
     else:
         return jsonify({"error": "Request must be JSON"}), 400
