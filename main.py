@@ -5,12 +5,9 @@ import datetime
 import time
 import os
 import secrets
-from argon2 import PasswordHasher
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 # Create the Flask app
@@ -84,19 +81,39 @@ def generate_token(user_id, name, group_name):
     
     return encrypted_aes_key, encrypted_token
 
+# AES decryption function
+def decrypt_with_aes(aes_key, encrypted_data):
+    iv = encrypted_data[:16]  # First 16 bytes are the IV
+    ciphertext = encrypted_data[16:]  # The rest is the ciphertext
+    
+    cipher = Cipher(algorithms.AES(aes_key), modes.CBC(iv), backend=default_backend())
+    decryptor = cipher.decryptor()
+    
+    decrypted_data = decryptor.update(ciphertext) + decryptor.finalize()
+    
+    # Remove padding
+    padding_length = decrypted_data[-1]
+    decrypted_data = decrypted_data[:-padding_length]
+    
+    return decrypted_data
+
 # Middleware to protect routes
 def token_required(f):
     def decorator(*args, **kwargs):
         token = request.headers.get('x-access-token')
-        if not token:
-            return jsonify({'message': 'Token is missing!'}), 401
+        aes_key = request.headers.get('x-aes-key')  # Added to get the encrypted AES key
+        
+        if not token or not aes_key:
+            return jsonify({'message': 'Token or AES key is missing!'}), 401
+        
         try:
             # Ensure the token is in bytes if it's in hex format
             encrypted_token_bytes = bytes.fromhex(token)
-            
+            encrypted_aes_key_bytes = bytes.fromhex(aes_key)
+
             # Decrypt the AES key using RSA private key
             decrypted_aes_key = private_key.decrypt(
-                encrypted_token_bytes,
+                encrypted_aes_key_bytes,
                 padding.OAEP(
                     mgf=padding.MGF1(algorithm=hashes.SHA256()),
                     algorithm=hashes.SHA256(),
