@@ -79,7 +79,10 @@ def generate_token(user_id, name, group_name):
     # Encrypt the AES key using RSA
     encrypted_aes_key = encrypt_aes_key_with_rsa(aes_key)
     
-    return encrypted_aes_key, encrypted_token
+    # Concatenate encrypted AES key and encrypted token together
+    encrypted_data = encrypted_aes_key + encrypted_token
+    
+    return encrypted_data
 
 # AES decryption function
 def decrypt_with_aes(aes_key, encrypted_data):
@@ -101,19 +104,21 @@ def decrypt_with_aes(aes_key, encrypted_data):
 def token_required(f):
     def decorator(*args, **kwargs):
         token = request.headers.get('x-access-token')
-        aes_key = request.headers.get('x-aes-key')  # Added to get the encrypted AES key
         
-        if not token or not aes_key:
-            return jsonify({'message': 'Token or AES key is missing!'}), 401
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 401
         
         try:
             # Ensure the token is in bytes if it's in hex format
-            encrypted_token_bytes = bytes.fromhex(token)
-            encrypted_aes_key_bytes = bytes.fromhex(aes_key)
+            encrypted_data = bytes.fromhex(token)
+
+            # Separate the encrypted AES key and encrypted token
+            encrypted_aes_key = encrypted_data[:256]  # Assuming RSA encrypted AES key is 256 bytes
+            encrypted_token = encrypted_data[256:]
 
             # Decrypt the AES key using RSA private key
             decrypted_aes_key = private_key.decrypt(
-                encrypted_aes_key_bytes,
+                encrypted_aes_key,
                 padding.OAEP(
                     mgf=padding.MGF1(algorithm=hashes.SHA256()),
                     algorithm=hashes.SHA256(),
@@ -122,7 +127,7 @@ def token_required(f):
             )
             
             # Decrypt the token using the decrypted AES key
-            decrypted_token = decrypt_with_aes(decrypted_aes_key, encrypted_token_bytes)
+            decrypted_token = decrypt_with_aes(decrypted_aes_key, encrypted_token)
 
             # Decode the JWT token
             data = jwt.decode(decrypted_token, app.config['SECRET_KEY'], algorithms=['HS256'])
@@ -148,11 +153,10 @@ def get_token():
 
     user_id = generate_user_id(data['name'], data['Group_Name'])
     
-    encrypted_aes_key, encrypted_token = generate_token(user_id, data['name'], data['Group_Name'])
+    encrypted_data = generate_token(user_id, data['name'], data['Group_Name'])
     
     return jsonify({
-        'encrypted_aes_key': encrypted_aes_key.hex(), 
-        'encrypted_token': encrypted_token.hex(),
+        'encrypted_data': encrypted_data.hex(),
         'user_id': user_id
     }), 200
 
