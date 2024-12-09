@@ -160,7 +160,47 @@ def get_token():
         'user_id': user_id
     }), 200
 
-# Protected route to get user data, ensuring the user_id in the token matches the URL user_id
+# Route to exchange public keys
+@app.route('/exchange-public-key', methods=['POST'])
+@token_required
+def exchange_public_key(current_user_id, current_group_name, current_name):
+    data = request.get_json()
+
+    # Ensure the public key is provided
+    if 'public_key' not in data:
+        return jsonify({'error': 'Public key is required'}), 400
+
+    # Here, you can store the public key in a session or temporary storage
+    # but for now, we just return a success message
+    return jsonify({'message': 'Public key received successfully'}), 200
+
+# Route to send encrypted messages
+@app.route('/send-message', methods=['POST'])
+@token_required
+def send_message(current_user_id, current_group_name, current_name):
+    data = request.get_json()
+
+    if 'recipient_id' not in data or 'encrypted_message' not in data:
+        return jsonify({'error': 'Recipient ID and encrypted message are required'}), 400
+    
+    # For simplicity, we'll assume the message is forwarded without modification.
+    # You can store the message and encrypted content as needed (e.g., in a DB).
+    return jsonify({'message': 'Encrypted message sent successfully'}), 200
+
+# Route to receive encrypted messages
+@app.route('/receive-message', methods=['GET'])
+@token_required
+def receive_message(current_user_id, current_group_name, current_name):
+    # Here, retrieve the encrypted messages from a storage system
+    # (assuming the encrypted messages are already stored)
+    encrypted_messages = [
+        {'encrypted_message': 'base64_encoded_encrypted_message_1'},
+        {'encrypted_message': 'base64_encoded_encrypted_message_2'}
+    ]
+    
+    return jsonify({'messages': encrypted_messages}), 200
+
+# Route to get user data, ensuring the user_id in the token matches the URL user_id
 @app.route('/get-user/<user_id>', methods=['GET'])
 @token_required
 def get_user(current_user_id, current_group_name, current_name, user_id):
