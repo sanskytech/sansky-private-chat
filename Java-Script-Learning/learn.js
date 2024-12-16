@@ -30,3 +30,17 @@ function Blue(){
     }
     
 }
+
+const mytext=document.getElementById("texty");
+function text(){
+    if (mytext.textContent="hello I am here the powerful"){
+        mytext.textContent="fantastic girl let't go to node.js and see it power";
+
+    }else{
+        mytext.textContent="hello I am here the powerful"
+
+    }
+    
+    
+}
+
