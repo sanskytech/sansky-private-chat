@@ -30,3 +30,39 @@ var PacketM=setInterval(function(){
 //tell the directory that we are in
 console.log(__dirname);
 console.log(__filename);
+
+
+function Sayhi(){
+    console.log("hi");
+}
+
+Sayhi();
+
+function Saylove(){
+    console.log("love");
+}
+Saylove();
+
+//function expression we do not give the function name and we put it
+// in a varibale and we call that 
+var Sayyes=function(){
+    console.log("yes!");
+}
+Sayyes();
+
+function CallFunction (fun){
+    fun();
+}
+
+CallFunction(Sayyes);
+
+
+function encapsuler (fun){
+    fun();
+}
+
+var Boos= function(){
+    console.log("Boos");
+}
+
+encapsuler(Boos);
