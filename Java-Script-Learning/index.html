@@ -1,0 +1,35 @@
+<html>
+    <body>
+        <div id="app"></div>
+        
+        <script type="text/javascript">
+            //slecet the div element
+            const app=document.getElementById("app");
+            //creating element 
+            const header=document.createElement("h1");
+            
+
+            //creating a text
+            const text="hello this is my text";
+            //textnode
+            const headercontent=document.createTextNode(text);
+            // adding the content to h1
+            header.appendChild(headercontent);
+
+            //adding the header to div
+            app.appendChild(header);
+
+        </script>
+
+        <div id="app2"></div>
+        <script type="text/javascript">
+            const app2=document.getElementById("app2");
+            const header2=document.createElement("h2");
+            const text2="this is the second text";
+            const text2content=document.createTextNode(text2);
+            header2.appendChild(text2content);
+            app2.appendChild(header2);
+
+        </script>
+    </body>
+</html>
