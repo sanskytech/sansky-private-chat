@@ -1,0 +1,103 @@
+<html>
+    <body>
+        <div id="app"></div>
+
+      
+        <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+        <!-- Babel Script let us to use jsx -->
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <!-- the type of the script also must be changed from javascript to jsx -->
+        <script type="text/jsx">
+            const domNode=document.getElementById("app");
+            const root= ReactDOM.createRoot(domNode);
+            root.render(<h1>Develop. Preveiw. Ship.</h1>);
+        </script>
+
+        <div id="app2"></div>
+        <script type="text/javascript">
+            const app2=document.getElementById("app2");
+            const header2=document.createElement("h2");
+            const text2="this is the second text";
+            const text2content=document.createTextNode(text2);
+            header2.appendChild(text2content);
+            app2.appendChild(header2);
+
+        </script>
+
+        <div id="app3"></div>
+        
+        <script type="text/jsx">
+            const domeNode=document.getElementById("app3");
+            const root=ReactDOM.createRoot(domeNode);
+            root.render(<h2> Hello this is the second root render with react</h2>);
+        </script>
+        <div id="components"></div>
+        <script type="text/jsx">
+            const domNode=document.getElementById("components");
+            function Header(){
+                return <h1> nested component  </h1>;
+            }
+            function HomePage(){
+                return (
+                    <div> <Header /> </div>
+                    );
+            }
+
+
+
+            const root=ReactDOM.createRoot(domNode);
+            // capitalize the react component 
+            root.render(<HomePage />);
+            
+
+        </script>
+
+
+        <div id="nest"></div>
+        <script type="text/jsx">
+            const node=document.getElementById("nest");
+
+            function Header(){  
+                return <h2> nest nest </h2>
+            }
+
+            function Header2(){
+                return <h3> header 2 </h3>
+            }
+
+            function Home(){
+                return (
+                    <div> <Header /> </div>
+                     );
+            }
+
+            function House(){
+                return (
+                    <div> <Header2 /> </div>
+                );
+            }
+
+            const root=ReactDOM.createRoot(node);
+            root.render(<House />);
+        </script>
+
+
+        <div id="mother"></div>
+        <script type="text/jsx">
+            const node=document.getElementById("mother");
+            function Header3(){
+                return <h3> love exist in the heart </h3>
+            }
+
+            function Family(){
+                return (
+                    <div> <Header3 /> </div>
+                );
+            }
+
+            const root=ReactDOM.createRoot(node);
+            root.render(<Family />);
+        </script>
+    </body>
+</html>
