@@ -32,15 +32,18 @@
             const root=ReactDOM.createRoot(domeNode);
             root.render(<h2> Hello this is the second root render with react</h2>);
         </script>
+
         <div id="components"></div>
         <script type="text/jsx">
             const domNode=document.getElementById("components");
-            function Header(){
-                return <h1> nested component  </h1>;
+            function Header({title}){
+                console.log(title);
+                return <h1> {`hello ${title}`} </h1>;
             }
+            // title in curly braces 
             function HomePage(){
                 return (
-                    <div> <Header /> </div>
+                    <div> <Header title="React"/> </div>
                     );
             }
 
@@ -54,50 +57,66 @@
         </script>
 
 
-        <div id="nest"></div>
+        
+        <div id="father"></div>
         <script type="text/jsx">
-            const node=document.getElementById("nest");
-
-            function Header(){  
-                return <h2> nest nest </h2>
+            const mynodee=document.getElementById("father");
+            function Text({title}){
+                 
+                return <h2> {`hello ${title}`} </h2>;
             }
 
-            function Header2(){
-                return <h3> header 2 </h3>
-            }
-
-            function Home(){
-                return (
-                    <div> <Header /> </div>
-                     );
-            }
-
-            function House(){
-                return (
-                    <div> <Header2 /> </div>
+            function Whole(){
+                return(
+                    <div> <Text title="nam namoo"/>  </div>
                 );
             }
 
-            const root=ReactDOM.createRoot(node);
-            root.render(<House />);
+
+            const root=ReactDOM.createRoot(mynodee);
+            root.render(<Whole />);
         </script>
 
-
-        <div id="mother"></div>
+        
+        <div id="vvather"></div>
         <script type="text/jsx">
-            const node=document.getElementById("mother");
-            function Header3(){
-                return <h3> love exist in the heart </h3>
+            const mynode=document.getElementById("vvather");
+            function Text({content}){
+                console.log(content);  
+                return <h2> {`fun ${content}`} </h2>;
             }
 
-            function Family(){
-                return (
-                    <div> <Header3 /> </div>
+            function Whole(){
+                return(
+                    <div> <Text content="gggg"/>  </div>
                 );
+
             }
+
+
+            const root=ReactDOM.createRoot(mynode);
+            root.render(<Whole />);
+        </script>
+
+        <div id="id"></div>
+        <script type="text/jsx">
+            const node=document.getElementById("id");
+            function Hoo({title}){
+                //console.log(title);
+                return <h1> {`cool ${title}`} </h1>;
+            }
+            function Boo(){
+                return(
+                    <div> <Hoo title="Gorboze"/> </div>
+                );
+
+            }
+
+
 
             const root=ReactDOM.createRoot(node);
-            root.render(<Family />);
+            root.render(<Boo />);
         </script>
+
     </body>
 </html>
