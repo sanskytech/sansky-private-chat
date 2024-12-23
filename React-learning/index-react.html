@@ -36,14 +36,22 @@
         <div id="components"></div>
         <script type="text/jsx">
             const domNode=document.getElementById("components");
+            
             function Header({title}){
                 console.log(title);
                 return <h1> {`hello ${title}`} </h1>;
             }
             // title in curly braces 
+
+
             function HomePage(){
+                const names=['Paniz Heidari','Mohammad Ahmadi','Fattaneh GoozGoozi'];
                 return (
-                    <div> <Header title="React"/> </div>
+                    <div> <Header title="React"/> 
+                    <ul>
+                        {names.map((name)=>(<li key={name}>{name}</li>))}
+                    </ul>
+                    </div>
                     );
             }
 
@@ -67,8 +75,13 @@
             }
 
             function Whole(){
+                const Lands=['Deutsch','SChweiz','Switzerelnad'];
                 return(
-                    <div> <Text title="nam namoo"/>  </div>
+                    <div> <Text title="nam namoo"/>
+                    <ul>
+                        {Lands.map((land)=><li key={land}> {land}</li>)}
+                    </ul>
+                    </div>
                 );
             }
 
@@ -87,8 +100,13 @@
             }
 
             function Whole(){
+                const Farben=['blue','Pink','Rot'];
                 return(
-                    <div> <Text content="gggg"/>  </div>
+                    <div> <Text content="gggg"/>
+                    <ul>
+                        {Farben.map((Farbe)=><li key={Farbe}>{Farbe}</li>)}
+                    </ul> 
+                    </div>
                 );
 
             }
@@ -101,13 +119,22 @@
         <div id="id"></div>
         <script type="text/jsx">
             const node=document.getElementById("id");
+
+
             function Hoo({title}){
                 //console.log(title);
-                return <h1> {`cool ${title}`} </h1>;
+                return <h1> {title ? title :"Default title"} </h1>;
             }
+
+
             function Boo(){
+                const Liist=['Masood','Mohammad','Ali'];
                 return(
-                    <div> <Hoo title="Gorboze"/> </div>
+                    <div> <Hoo title="Gorboze"/>
+                    <ul>
+                        {Liist.map((li)=><li key={li}>{li}</li>)}
+                    </ul>
+                    </div>
                 );
 
             }
