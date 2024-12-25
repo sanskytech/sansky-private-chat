@@ -120,22 +120,64 @@
         <script type="text/jsx">
             const node=document.getElementById("id");
 
+            
+
 
             function Hoo({title}){
                 //console.log(title);
                 return <h1> {title ? title :"Default title"} </h1>;
             }
 
+            
+            function Anotherlist({title}){
+                return <h1> {`${title} girl`}</h1>;
+            }
+
+            
+            
+           
 
             function Boo(){
-                const Liist=['Masood','Mohammad','Ali'];
-                return(
-                    <div> <Hoo title="Gorboze"/>
-                    <ul>
-                        {Liist.map((li)=><li key={li}>{li}</li>)}
-                    </ul>
+                {/* hooks those set of funciton for managing state */ }
+
+                const [loves , setLoves]=React.useState(0);
+
+                const [likes, setLikes ]=React.useState(0);
+                const another=['Hello','Hey','Bonjour'];
+                const liist=['Masood','Mohammad','Ali'];
+
+                function love(){
+                    setLoves(loves + 1);
+                }
+
+                function handleClick(){
+                    setLikes(likes + 1);
+                    return console.log("increment like count");
+                }
+                function handle(){
+                    return console.log("hura");
+                }
+
+                return (
+                    <div>
+                
+                        <div> <Anotherlist  title="begruß"/>
+                            <ul>
+                            {another.map((beg)=><li key={beg}> {beg}</li>)}
+                            </ul>
+                                <button onClick={love}> Like ({loves}) </button>
+                        </div>
+                    
+                        <div> <Hoo title="Gorboze"/>
+                         <ul>
+                            {liist.map((li)=><li key={li}>{li}</li>)}
+                            </ul>
+                                {/* this is comment? */}
+                                {/* here we have another comment */}
+                                <button onClick={handleClick}> I love ({lik})  </button>
+                     </div>
                     </div>
-                );
+                    );
 
             }
 
