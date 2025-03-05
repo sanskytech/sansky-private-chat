@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+
+
+/* Apply to the whole page  From here the phone background is 
+fucky */
+html, body {
+  height: 100%;  /* Ensure the body and html take up the entire viewport height */
+  margin: 0;     /* Remove any default margin */
+}
+
+body {
+  background-image: url('/background-create-page.png');  /* Your image path */
+  background-size: cover;                               /* Ensure the image covers the full screen */
+  background-position: center center;                    /* Center the background image */
+  background-repeat: no-repeat;                          /* Prevent the image from repeating */
+}
+
+/* Optional: If you want to adjust for smaller screens */
+@media (max-width: 768px) {
+  body {
+    background-image: url('/background-create-page.png'); /* Your image path for mobile */
+    background-size: cover;                              /* Ensure it covers the full screen */
+    background-position: center center;                  /* Keep it centered */
+  }
+}
