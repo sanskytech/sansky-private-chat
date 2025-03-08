@@ -4,6 +4,9 @@
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: oklch(67.23% 0.141 250.72);
+  --color-secondary: oklch(60.74% 0.2148 296.29);
+  --color-accent: oklch(88.68% 0.182186 95.3305);
 }
 
 :root {
@@ -18,7 +21,19 @@
   }
 }
 
+h1 {
+  @apply text-2xl font-bold;
+}
+h2 {
+  @apply text-xl font-semibold;
+}
+h3 {
+  @apply text-lg font-semibold;
+}
 
+p {
+  @apply text-base;
+}
 
 
 
