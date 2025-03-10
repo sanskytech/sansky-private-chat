@@ -9,7 +9,7 @@ const Page = () => {
         
   
         {/* Page Content */}
-        <div className="flex flex-col gap-8 mt-4 p-10 bg-white rounded shadow-lg w-2/3 xl:w-4/11 ">
+        <div className="flex flex-col gap-8 mt-4 p-10 bg-white rounded shadow-lg w-2/3 xl:w-4/11 "  >
           
           <h2 className="text-center">Enjoy Security With Sanskytech</h2>
           <TextField
@@ -29,7 +29,7 @@ const Page = () => {
             <Link href={'/join'} className="text-primary">Join Here</Link>
           </div>
 
-          <button className="bg-primary text-white font-bold py-2 px-4 rounded-xl">
+          <button className="text-white font-bold py-2 px-4 rounded-xl" style={{ backgroundColor: "#2F98BC"}}>
             Create Room
           </button>
           </div>
