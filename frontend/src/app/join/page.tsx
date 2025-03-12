@@ -1,8 +1,30 @@
+'use client';
 
 import { TextField } from "@mui/material";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const [username, setUsername] = useState("");
+  const [invitationCode, setInvitationCode] = useState("");
+  const router = useRouter();
+
+  const onJoinClick = () => { 
+    // Add your join logic here
+    if (username === "" || invitationCode === "") {
+      alert("Please fill all fields");
+      return;
+    }
+
+    // send a POST request to /api/join with the username and invitation code
+    
+    // if the request is successful, redirect to /waiting/[invitationCode]
+    router.push(`/waiting?code=${invitationCode}&username=${username}`);
+
+    // if the request fails, show an error message
+
+  }
     return (
       <div className="relative flex w-full h-full flex-col gap-4 justify-center items-center">
         {/* Logo positioned at top-left */}
@@ -10,62 +32,34 @@ const Page = () => {
         
   
         {/* Page Content */}
-        <div className="flex flex-col gap-8 mt-4 p-10 bg-white rounded shadow-xl w-2/3 xl:w-4/11 " style={{ backgroundColor: 'rgba(7, 149, 198, 0.3)' }} >
+        <div className="flex flex-col  mt-4 p-10  rounded shadow-xl w-2/3 xl:w-4/11 bg-[#0795c64d] "  >
           
-          <h2 className="text-center">Enjoy Security With Sanskytech</h2>
+          <h2 className="text-center text-white mb-4">Enjoy Security With Sanskytech</h2>
           <TextField
-  required
-  id="outlined-required"
-  label="Username"
-  className="rounded-xl"
-  sx={{
-    backgroundColor: 'white',
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '12px', // Same as your rounded-xl input
-      '& fieldset': {
-        borderColor: '#0795C6', // Default border color
-        borderRadius: '12px', // Ensure the fieldset matches the rounded corners
-      },
-      '&:hover fieldset': {
-        borderColor: '#0795C6', // Border on hover
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#0795C6', // Border when focused
-      },
-    },
-  }} 
-/>
+            required
+            id="outlined-required"
+            label="Username"
+            margin="normal"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="rounded-xl bg-white border border-[#0795C6] focus:border-[#0795C6] hover:border-[#0795C6]"
+          />
+          <TextField
+            required
+            id="outlined-required"
+            label="Invitation Code"
+            margin="normal"
+            value={invitationCode}
+            onChange={(e) => setInvitationCode(e.target.value)}
+            className="rounded-xl bg-white  border border-[#0795C6] focus:border-[#0795C6] hover:border-[#0795C6]"
+          />
 
-<TextField
-  required
-  id="outlined-required"
-  label="Invitation Code"
-  className="rounded-xl"
-  sx={{
-    backgroundColor: 'white',
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '12px', // Same as your rounded-xl input
-      '& fieldset': {
-        borderColor: '#0795C6', // Default border color
-        borderRadius: '12px', // Ensure the fieldset matches the rounded corners
-      },
-      '&:hover fieldset': {
-        borderColor: '#0795C6', // Border on hover
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#0795C6', // Border when focused
-      },
-    },
-  }}
-/>
-
-
-          <div className="flex justify-start gap-2">
+          <div className="flex justify-start mb-2 gap-2">
             <span  className="text-white" >Want to Create new one?</span>
             <Link href={'/create'} className="text-primary">Create Here</Link>
           </div>
 
-          <button className="text-white font-bold py-2 px-4 rounded-xl" style={{ backgroundColor: "#2F98BC"}}>
+          <button className="text-white font-bold py-2 px-4 rounded-xl cursor-pointer bg-[#2F98BC]" onClick={onJoinClick}>
             Join
           </button>
           </div>
