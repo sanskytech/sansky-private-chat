@@ -1,16 +1,13 @@
 'use client';
 
-import { TextField } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
 
 const Page = () => {
     const qrRef = useRef(null); // `qrRef` is a reference to the <div> where the QR code will be rendered.
     const invitationCode = "ABC123"; // Example code - ideally fetched from backend
-
+    
     useEffect(() => {
         if (!qrRef.current) return; // Prevents issues if `qrRef` is still null
 

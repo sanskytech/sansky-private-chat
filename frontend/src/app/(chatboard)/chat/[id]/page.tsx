@@ -3,9 +3,10 @@
 const ChatPage = () => {
     return (
         <div>
-            <h1>Main chat page</h1>
+            <h1>casdgfatww</h1>
         </div>
     )
 }
 
 export default ChatPage
+
