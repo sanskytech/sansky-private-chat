@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../global.css";
 
+
 // import Image from 'next/image';
 // import Link from "next/link";
 
@@ -40,7 +41,6 @@ export default function RootLayout({
             className="absolute top-0 left-0 p-4 "
           />
         </Link> */}
-
         {children}
       </body>
     </html>

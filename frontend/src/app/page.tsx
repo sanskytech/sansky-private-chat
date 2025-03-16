@@ -1,4 +1,5 @@
 import AnimatedLink from "@/components/AnimatedLink";
+
 import Image from 'next/image';
 import Link from "next/link";
 
@@ -19,6 +20,7 @@ export default function Home() {
          <h1 className="text-4xl font-bold">Welcome to Sansyktech</h1>	
          <p className="text-lg">This is a private chat application</p>
          <AnimatedLink href="/create">Start from here</AnimatedLink>
+
       </main>
     </div>
   );
