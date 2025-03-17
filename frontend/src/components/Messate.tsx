@@ -17,9 +17,9 @@ const Message = ({ message, userImage, username, timestamp, isCurrentUser }:Mess
                 >
                     {username.charAt(0).toUpperCase()}
                 </Avatar>
-                <div className={`message flex flex-row rounded-xl  ${isCurrentUser? "flex-row-reverse bg-primary/40" : "bg-secondary/40"} gap-2 p-2 items-center`}>
+                <div className={`message flex flex-row rounded-xl  ${isCurrentUser? "flex-row-reverse bg-primary/40" : "bg-secondary/40"} gap-2 p-2 items-start`}>
                     <span className={`text-bold text-xs p-2 rounded-xl    ${isCurrentUser ? "bg-primary/40" : "bg-secondary/40"} `} >{username}</span>
-                    <div className="message-content text-lg p-2">
+                    <div className="message-content text-lg px-2">
                         {message}
                     </div>
                 </div>

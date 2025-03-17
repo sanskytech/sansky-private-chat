@@ -33,7 +33,7 @@ const MessageList = () => {
             isCurrentUser: true
         },
         {
-            message: "I'm good, thank you",
+            message: "I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new? I'm good, thank you. How about you? I hope you are doing well. What's new?",
             timestamp: new Date("2025-06-01T12:00:00Z"),
             username: "Paniz",
             userImage: "",

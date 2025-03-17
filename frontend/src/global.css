@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@import "../node_modules/preline/variants.css";
-
 
 @theme {
   --font-sans: var(--font-geist-sans);
