@@ -6,7 +6,7 @@ const ChatPage = () => {
     return (
         <div className="relative flex flex-col h-screen w-full">
             {/* top band */}
-            <div className={`absolute top-0 left-0 bg-blue-400 w-full h-[100px] z-10 `}>
+            <div className={`absolute top-0 left-0 bg-[#4BA6CB]  w-full h-[75px] z-10 `}>
                 <h1 className="text-4xl font-bold text-white text-center">ChatName</h1>
             </div>
             {/* body */}
@@ -17,7 +17,7 @@ const ChatPage = () => {
 
             {/* bottom band */}
             <div className="absolute bottom-4 left-0 px-4 w-full h-[50px] z-10">
-                <InputField />
+            <InputField />
             </div>        
         </div>
     )
