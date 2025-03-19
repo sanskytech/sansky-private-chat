@@ -1,6 +1,6 @@
 'use client';
 
-import Link from "next/link";
+
 import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
 
@@ -33,10 +33,22 @@ const Page = () => {
     }, [invitationCode]);
 
     const handleCopyButton = () => {
-        navigator.clipboard.writeText(invitationCode)
-          .then(() => alert("Code copied to clipboard!"))
-          .catch((error) => console.error('Failed to copy:', error));
-    }
+      if (typeof window !== 'undefined' && navigator.clipboard) {
+          navigator.clipboard.writeText(invitationCode)
+              .then(() => alert("Code copied to clipboard!"))
+              .catch((error) => console.error('Failed to copy:', error));
+      } else {
+          // Fallback method for unsupported environments
+          const textArea = document.createElement("textarea");
+          textArea.value = invitationCode;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");  // Old-school method
+          document.body.removeChild(textArea);
+          alert("Code copied to clipboard!");
+      }
+  };
+  
     
     
     return (
@@ -61,7 +73,7 @@ const Page = () => {
           
         <div className="flex justify-center items-center text-center w-full mt-5 mb-5 gap-2 ">
             <span  className="text-white" >Do not share the secret code with unknown person!</span>
-            <Link href={'/create'} className="text-primary">Create Here</Link>
+            
         </div>
 
         <div className="flex justify-start mb-2 gap-4 w-full">
