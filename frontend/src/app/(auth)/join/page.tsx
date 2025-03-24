@@ -1,9 +1,10 @@
 'use client';
 
-import { TextField } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import TextInputField from "@/components/CustomTextField";
+import Button from "@/components/Button";
 
 const Page = () => {
   const [username, setUsername] = useState("");
@@ -35,33 +36,21 @@ const Page = () => {
         <div className="flex flex-col  mt-4 p-10  rounded shadow-xl w-2/3 xl:w-4/11 bg-[#0795c64d] "  >
           
           <h2 className="text-center text-white mb-4">Enjoy Security With Sanskytech</h2>
-          <TextField
-            required
-            id="outlined-required"
-            label="Username"
-            margin="normal"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="rounded-xl bg-white border border-[#0795C6] focus:border-[#0795C6] hover:border-[#0795C6]"
+          <TextInputField required label={"Username"}  
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
           />
-          <TextField
-            required
-            id="outlined-required"
-            label="Invitation Code"
-            margin="normal"
-            value={invitationCode}
-            onChange={(e) => setInvitationCode(e.target.value)}
-            className="rounded-xl bg-white  border border-[#0795C6] focus:border-[#0795C6] hover:border-[#0795C6]"
+          <TextInputField required label={"Invitation Code"}
+                      value={invitationCode}
+                      onChange={(e) => setInvitationCode(e.target.value)}
           />
-
           <div className="flex justify-start mb-2 gap-2">
             <span  className="text-white" >Want to Create new one?</span>
             <Link href={'/create'} className="text-primary">Create Here</Link>
           </div>
 
-          <button className="text-white font-bold py-2 px-4 rounded-xl cursor-pointer bg-[#2F98BC]" onClick={onJoinClick}>
-            Join
-          </button>
+          <Button onClick={onJoinClick} label="Join" />
+          
           </div>
       </div>
     );

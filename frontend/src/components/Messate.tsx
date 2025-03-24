@@ -10,7 +10,7 @@ const Message = ({ message, userImage, username, timestamp, isCurrentUser }:Mess
 
     return (
         <div className={`flex  flex-col w-full my-2   p-2`}>
-            <div className={` flex flex-col  ${isCurrentUser ? "items-end pl-60  " : "items-start pr-60"}`}>
+            <div className={` flex flex-col  ${isCurrentUser ? "items-end pl-10 md:pl-60  " : "items-start pr-10 md:pr-60"}`}>
 
                 <Avatar alt={username} src={userImage? userImage : ""}
                     className={`!w-6 !h-6 !text-xs !my-2    ${isCurrentUser? "!bg-primary/40" : "!bg-secondary/40"}`}                

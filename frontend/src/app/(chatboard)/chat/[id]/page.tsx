@@ -10,7 +10,7 @@ const ChatPage = () => {
                 <h1 className="text-4xl font-bold text-white text-center">ChatName</h1>
             </div>
             {/* body */}
-            <div className="flex-1 overflow-y-scroll bg-gray-100 mt-[100px] mb-[60px]">
+            <div className="flex-1 overflow-y-scroll bg-gray-100 pt-[100px] mb-[60px]">
                 {/* MessageList */}
                 <MessageList/> 
             </div>

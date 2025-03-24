@@ -50,14 +50,12 @@ const MessageList = () => {
 
   messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   return (
-    <div className={`flex flex-col gap-2 p-2 w-full h-full overflow-y-auto`}>
+    <div className={`flex flex-col gap-2 p-2 w-full h-full `}>
         {messages.map((message, index) => (
             <Message key={index} {...message} />
         ))}
-      
     </div>
   );
 }
-
 
 export default MessageList;
