@@ -27,9 +27,9 @@ const CountdownPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-gray-900">
+    <div className="w-11/12 max-w-md mx-auto  flex flex-col items-center justify-center min-h-screen text-gray-900">
       <h1 className="text-4xl font-bold">Welcome {usename || "N/A"}</h1>
-      <p className="text-3xl ">We notify the admin, please wait until someone lets you in!</p>
+      <p className="text-xl md:text-3xl text-center ">We notify the admin, please wait until someone lets you in!</p>
       <p className="text-2xl mt-4">Time Left: {formatTime(timeLeft)}</p>
       <div className="mt-10">
       <span className="relative flex size-20">

@@ -33,7 +33,7 @@ const Page = () => {
         
   
         {/* Page Content */}
-        <div className="flex flex-col  mt-4 p-10  rounded shadow-xl w-2/3 xl:w-4/11 bg-[#0795c64d] "  >
+        <div className="w-11/12 md:w-6/12 xl:w-4/12 flex flex-col  mt-4 p-4 md:p-10 rounded shadow-xl w-2/3 xl:w-4/11 bg-[#0795c64d] "  >
           
           <h2 className="text-center text-white mb-4">Enjoy Security With Sanskytech</h2>
           <TextInputField required label={"Username"}  
@@ -45,8 +45,8 @@ const Page = () => {
                       onChange={(e) => setInvitationCode(e.target.value)}
           />
           <div className="flex justify-start mb-2 gap-2">
-            <span  className="text-white" >Want to Create new one?</span>
-            <Link href={'/create'} className="text-primary">Create Here</Link>
+            <span  className="text-xs sm:text-base text-white" >Want to Create new one?</span>
+            <Link href={'/create'} className="text-xs sm:text-base text-primary">Create Here</Link>
           </div>
 
           <Button onClick={onJoinClick} label="Join" />

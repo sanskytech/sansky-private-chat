@@ -76,7 +76,7 @@ export default function RootLayout({
 
 
       {/* Body */}
-      <div className={`flex-1 bg-gray-100 h-screen scroll-smooth `}>{children}</div>
+      <div className={`md:p-10 flex-1 bg-gray-100 h-screen scroll-smooth `}>{children}</div>
     </div>
   );
 }

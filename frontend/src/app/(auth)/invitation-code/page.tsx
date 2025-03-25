@@ -58,7 +58,7 @@ const Page = () => {
         
   
         {/* Page Content */}
-        <div className="flex flex-col  mt-4 p-10  rounded shadow-xl w-2/3 xl:w-4/11 bg-[#0795c64d] "  >
+        <div className="w-11/12 md:w-6/12 xl:w-4/12 flex flex-col p-4 mt-4 md:p-10  rounded shadow-xl w-2/3 xl:w-4/11 bg-[#0795c64d] "  >
           
           <h2 className="text-center text-white mb-4">Invitation Code</h2>
           
@@ -72,7 +72,7 @@ const Page = () => {
 
           
         <div className="flex justify-center items-center text-center w-full mt-5 mb-5 gap-2 ">
-            <span  className="text-white" >Do not share the secret code with unknown person!</span>
+            <span  className="text-xs sm:text-base text-white" >Do not share the secret code with unknown person!</span>
             
         </div>
 
