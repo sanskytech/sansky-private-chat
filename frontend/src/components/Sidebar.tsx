@@ -1,4 +1,3 @@
-"use client";
 
 import Image from 'next/image';
 import React, { useState } from "react";
@@ -8,26 +7,29 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Button from '@/components/Button';
 
+type SidebarProps = {
+    showCollapsedIcon:boolean;
+    classNames?: string;
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const router = useRouter();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+}
 
-  const handleInviteClick = () => {
-    router.push("/invitation-code");
-  };
+const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+    const router = useRouter();
+    const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  
+    const handleInviteClick = () => {
+      router.push("/invitation-code");
+    };
+  
+    const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
-  return (
-    <div className={`flex `}>
-      {/* Left Navigation */}
-      <div
-        className={` ${isCollapsed ? 'w-0' : 'w-1/4'} transition-all duration-300 bg-gray-200 h-screen flex flex-col justify-between p-4 relative overflow-hidden`}
+    
+
+    return (
+        <div
+        className={` ${isCollapsed ? ' w-full md:w-0' : '  '} ${classNames} transition-all duration-300 bg-gray-200 h-screen flex flex-col justify-between p-4 relative overflow-hidden`}
       >
         {/* Logo */}
         <Image 
@@ -37,14 +39,15 @@ export default function RootLayout({
           height={300}
           className={`absolute top-[-6px] left-5 p-4 z-0 ${isCollapsed ? 'hidden' : ''}`}
         />
-
-        {/* Toggle Button */}
-        <Button label={isCollapsed ? <KeyboardArrowRightIcon  /> : <KeyboardArrowLeftIcon />}
+        {
+            showCollapsedIcon && 
+            <Button label={isCollapsed ? <KeyboardArrowRightIcon  /> : <KeyboardArrowLeftIcon />}
                 onClick={toggleSidebar}
-                className="absolute right-[-7px] top-1/2 transform -translate-y-1/2 p-1 bg-[#2F98BC] text-white rounded-full shadow-lg text-xs w-6 h-6 flex items-center justify-center"
-        />
+                className="flex absolute right-[-7px] top-1/2 transform -translate-y-1/2 p-1 bg-[#2F98BC] text-white rounded-full shadow-lg text-xs w-6 h-6 flex items-center justify-center"
+            />
+        }
 
-        <div className={`${isCollapsed ? 'hidden' : 'block mt-32'}`}>
+        <div className={`${isCollapsed ? 'block md:hidden' : 'block mt-32'}`}>
           {/* Group List */}
           <GroupBand 
             name="Paniz" 
@@ -60,7 +63,7 @@ export default function RootLayout({
 
         {/* Bottom Buttons */}
         {!isCollapsed && (
-          <div className="flex flex-col gap-2">
+          <div className={`flex flex-col gap-2 ${isCollapsed ? "" : " " } `}>
             <Button 
               label="Invite"
               className="text-white font-bold py-1.5 px-4 rounded-xl cursor-pointer bg-[#2F98BC]"
@@ -73,10 +76,8 @@ export default function RootLayout({
           </div>
         )}
       </div>
-
-
-      {/* Body */}
-      <div className={`md:p-10 flex-1 bg-gray-100 h-screen scroll-smooth `}>{children}</div>
-    </div>
-  );
+    )
 }
+
+
+export default Sidebar;
