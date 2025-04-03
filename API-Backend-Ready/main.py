@@ -9,9 +9,13 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from flask_cors import CORS
+
 
 # Create the Flask app
 app = Flask(__name__)
+
+CORS(app, resources={r"/get-token": {"origins": "http://localhost:3000", "methods": ["POST", "GET"]}})
 
 # Set the secret key for JWT encoding
 app.config['SECRET_KEY'] = secrets.token_hex(32)  # Random secret key
