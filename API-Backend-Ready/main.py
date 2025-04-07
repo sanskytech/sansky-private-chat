@@ -16,7 +16,7 @@ from flask import make_response
 app = Flask(__name__)
 
 CORS(app, resources={r"/get-token": {"origins": "http://localhost:3000", "methods": ["POST", "GET"]}})
-
+#fuck comment 
 # Set the secret key for JWT encoding
 app.config['SECRET_KEY'] = secrets.token_hex(32)  # Random secret key
 
