@@ -6,16 +6,23 @@ interface ButtonProps {
   label: string | React.ReactNode;
   onClick?: () => void;
   className?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?:boolean;
+  spinner?:boolean;
+
 }
 
-const Button: React.FC<ButtonProps> = ({ label, onClick, className }) => {
+const Button: React.FC<ButtonProps> = ({ label, onClick, className , type="button", disabled, spinner=false}) => {
   return (
     <button
-      className={`text-white h-12 font-bold py-2 px-4 rounded-xl cursor-pointer bg-[#2F98BC] ${className}`}
-      onClick={onClick}
-    >
-      {label}
-    </button>
+    type={type}
+    onClick={onClick}
+    disabled={disabled}
+    className={`relative bg-primary text-white px-4 py-2 rounded disabled:opacity-50 ${className}`}
+  >
+    {spinner ? <span className="loader inline-block mr-2 w-4 h-4 border-2 border-t-white border-white/20 rounded-full animate-spin"></span> : null}
+    {label}
+  </button>
   );
 };
 

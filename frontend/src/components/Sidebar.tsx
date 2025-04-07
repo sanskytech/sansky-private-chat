@@ -29,7 +29,7 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
 
     return (
         <div
-        className={` ${isCollapsed ? ' w-full md:w-0' : '  '} ${classNames} transition-all duration-300 bg-gray-200 h-screen flex flex-col justify-between p-4 relative overflow-hidden`}
+        className={`${isCollapsed ? ' w-full md:w-0' : '  '} ${classNames} transition-all duration-300 bg-gray-200 h-screen flex flex-col justify-between p-4 relative overflow-hidden`}
       >
         {/* Logo */}
         <Image 
@@ -43,7 +43,7 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
             showCollapsedIcon && 
             <Button label={isCollapsed ? <KeyboardArrowRightIcon  /> : <KeyboardArrowLeftIcon />}
                 onClick={toggleSidebar}
-                className="flex absolute right-[-7px] top-1/2 transform -translate-y-1/2 p-1 bg-[#2F98BC] text-white rounded-full shadow-lg text-xs w-6 h-6 flex items-center justify-center"
+                className={`absolute ${isCollapsed ? "rigt-[0px]" : "right-[-160px]" } top-1/2 transform -translate-y-1/2 p-1 bg-[#2F98BC] text-white rounded-full shadow-lg text-xs w-6 h-6 flex items-center justify-center`}
             />
         }
 

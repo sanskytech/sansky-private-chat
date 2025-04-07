@@ -2,7 +2,7 @@
 
 import InputField from "@/components/InputField"
 import MessageList from "@/components/MessageList"
-import React, { useState } from "react";
+import React from "react";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/navigation";

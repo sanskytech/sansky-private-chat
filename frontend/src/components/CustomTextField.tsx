@@ -10,10 +10,11 @@ interface TextInputFieldProps {
   value?: string;
   className?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  size?: "small"|"medium"
+  size?: "small"|"medium";
+  name?:string;
 }
 
-const TextInputField: React.FC<TextInputFieldProps> = ({size="medium", value, label, required = false, id, className, onChange }) => {
+const TextInputField: React.FC<TextInputFieldProps> = ({size="medium", value, label, required = false, id, className, onChange, name }) => {
   return (
     <TextField
       required={required}
@@ -24,6 +25,7 @@ const TextInputField: React.FC<TextInputFieldProps> = ({size="medium", value, la
       onChange={onChange}
       value={value}
       size={size}
+      name={name}
     />
   );
 };
