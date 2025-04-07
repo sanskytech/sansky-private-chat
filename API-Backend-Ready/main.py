@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from flask_cors import CORS
-
+from flask import make_response
 
 # Create the Flask app
 app = Flask(__name__)
@@ -158,11 +158,28 @@ def get_token():
     user_id = generate_user_id(data['name'], data['Group_Name'])
     
     encrypted_data = generate_token(user_id, data['name'], data['Group_Name'])
+
+#httponly cookie added to the encrypted token only in development mode the seucre shoudl cahned to True 
+# to be sent in https !!!!! <warningn development mode >
     
-    return jsonify({
-        'encrypted_data': encrypted_data.hex(),
-        'user_id': user_id
-    }), 200
+
+    response = make_response(jsonify({'user_id': user_id}), 200)
+    response.set_cookie(
+    'auth_token',  # cookie name
+    encrypted_data.hex(),  # cookie value (hex-encoded)
+    httponly=True,
+    secure=False,  # only over HTTPS in production!
+    samesite='Strict',  # or 'Lax' / 'None' depending on your needs
+    max_age=3600  # cookie expires in 1 hour
+)
+    return response
+
+
+    
+   # return jsonify({
+   #     'encrypted_data': encrypted_data.hex(),
+   #     'user_id': user_id
+   # }), 200
 
 # Route to exchange public keys
 @app.route('/exchange-public-key', methods=['POST'])
