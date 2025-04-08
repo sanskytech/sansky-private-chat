@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev && python ../API-Backend-Ready/main.py",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -27,6 +27,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/elliptic": "^6.4.18",
+    "@types/jsbn": "^1.2.33",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

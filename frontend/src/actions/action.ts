@@ -1,8 +1,17 @@
 "use server";
 
+import { cookies } from 'next/headers'
+
 import axios, { AxiosError } from "axios";
+import { generateECDHKeyPair } from '@/utils/utils';
 
 
+
+export async function getCookie(name: string) {
+  const cookieStore = await cookies();
+  const cookieValue = cookieStore.get(name)?.value || null;
+  return cookieValue;
+}
 
 const api = axios.create({
     baseURL: process.env.API_URL, // Ensure this is set in your environment variables
@@ -46,21 +55,41 @@ export async function createRoomAction(
         },
       }
     );
+    
 
     const data = response.data;
 
     if (response.status == 200) {
-        // create a common key on the browser and store it in the indexedDB
 
+        // set http only cockie on the browser
+        const cookieStore = await cookies()
+        cookieStore.set(
+        'auth_token',
+        data.encrypted_data,
+         {
+          httpOnly: true,
+          maxAge: 3600,
+          sameSite:"lax",
+         }
+        );
+
+        // create public and private key
+        const { privateKey, publicKey } = generateECDHKeyPair();
+        console.log("Private Key:", privateKey);
+        console.log("Public Key:", publicKey);
+
+        // create a common key on the browser and store it in the indexedDB
         // const commonKey = crypto.getRandomValues(new Uint8Array(16));
         // await indexedDBHelper.storeCommonKey(key, commonKey);
         // await indexedDBHelper.storeUserId(groupName, data.user_id);
         // await indexedDBHelper.storeGroupName(groupName, groupName);
         // await indexedDBHelper.storeUsername(groupName, username);
+
+
         return {
             success: true,
             message: "Room created successfully!",
-            token: data.encrypted_data,
+            // token: data.encrypted_data,
             userId: data.user_id,
         };
     }
@@ -81,3 +110,5 @@ export async function createRoomAction(
     };
   }
 }
+
+

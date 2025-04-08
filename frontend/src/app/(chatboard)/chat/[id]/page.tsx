@@ -6,6 +6,7 @@ import React from "react";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/navigation";
+import WelcomeDialog from "@/components/WelcomeDialog";
 
 
 const ChatPage = () => {
@@ -14,6 +15,8 @@ const ChatPage = () => {
 
     return (
         <div className={`flex flex-row  h-screen w-full `}>
+            <WelcomeDialog/>
+            
             <div className={`hidden md:block `}>
                 <Sidebar showCollapsedIcon={true} classNames={`w-full`} />
             </div>

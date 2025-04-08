@@ -1,3 +1,4 @@
+'use client';
 
 import Image from 'next/image';
 import React, { useState } from "react";
@@ -6,6 +7,7 @@ import GroupBand from "@/components/GroupBand";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Button from '@/components/Button';
+import InviteDialog from "./InviteDialog"
 
 type SidebarProps = {
     showCollapsedIcon:boolean;
@@ -17,17 +19,25 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
 
     const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isInvited, setIsInvited] = useState(false);
   
   
     const handleInviteClick = () => {
-      router.push("/invitation-code");
+      // router.push("/invitation-code");
+      setIsInvited(true);
     };
+
+    const onInviteDialogClose = () => {
+      setIsInvited(false);
+    }
   
     const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
     
 
     return (
+      <>
+        <InviteDialog onInviteDialogClose={onInviteDialogClose} open={isInvited}/>
         <div
         className={`${isCollapsed ? ' w-full md:w-0' : '  '} ${classNames} transition-all duration-300 bg-gray-200 h-screen flex flex-col justify-between p-4 relative overflow-hidden`}
       >
@@ -76,6 +86,8 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
           </div>
         )}
       </div>
+
+    </>
     )
 }
 
