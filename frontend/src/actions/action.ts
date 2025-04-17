@@ -58,6 +58,7 @@ export async function createRoomAction(
     
 
     const data = response.data;
+    console.log("fuck is that working?")
 
     if (response.status == 200) {
 
@@ -71,7 +72,10 @@ export async function createRoomAction(
           maxAge: 3600,
           sameSite:"lax",
          }
+      
         );
+
+       
 
         // create public and private key
         const { privateKey, publicKey } = generateECDHKeyPair();

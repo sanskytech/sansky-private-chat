@@ -74,3 +74,20 @@ export const deriveDHSharedSecret = (
   const finalShared = shared.modPow(myPriv, p);
   return finalShared.toString(16);
 };
+
+
+// --- Wrapper: Generate Key Pair Based on Participant Count ---
+export const generateKeyPairForParticipants = (participantCount: number) => {
+  return participantCount > 2 ? generateDHKeyPair() : generateECDHKeyPair();
+};
+
+// --- Wrapper: Derive Shared Secret Based on Participant Count ---
+export const deriveSharedSecretForParticipants = (
+  participantCount: number,
+  privateKey: string,
+  otherPublicKeys: string[]
+) => {
+  return participantCount > 2
+    ? deriveDHSharedSecret(privateKey, otherPublicKeys)
+    : deriveECDHSharedSecret(privateKey, otherPublicKeys);
+};
