@@ -7,11 +7,13 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/navigation";
 import WelcomeDialog from "@/components/WelcomeDialog";
-
+import { useParams } from 'next/navigation';
 
 const ChatPage = () => {
     // const [isSidebarOpened,SetSidebarOpen] = useState(false);
     const router = useRouter();
+    const params= useParams();
+    const groupName=params?.id;
 
     return (
         <div className={`flex flex-row  h-screen w-full `}>
@@ -27,7 +29,7 @@ const ChatPage = () => {
                 </div>
                 {/* top band */}
                 <div className={`absolute top-0 left-0 bg-[#4BA6CB]  w-full h-[75px] z-10 `}>
-                    <h1 className="text-4xl font-bold text-white text-center">ChatName</h1>
+                    <h1 className="text-4xl font-bold text-white text-center">{groupName}</h1>
                 </div>
                 {/* body */}
                 <div className="flex-1 overflow-y-scroll bg-gray-100 pt-[100px] mb-[60px]">
