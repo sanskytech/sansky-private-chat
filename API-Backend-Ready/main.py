@@ -25,7 +25,7 @@ private_key = rsa.generate_private_key(
     public_exponent=65537,
     key_size=2048,
     backend=default_backend()
-)
+)   
 public_key = private_key.public_key()
 
 # Helper function to generate a random AES key (256 bits)
