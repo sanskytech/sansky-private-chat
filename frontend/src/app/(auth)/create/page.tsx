@@ -1,5 +1,6 @@
 'use client';
 
+import { storeUserId } from "../../../utils/indexDBHelper";
 import { useActionState, useTransition, useEffect, useState, forwardRef } from "react";
 import { useRouter } from "next/navigation";
 import { createRoomAction } from "@/actions/action";
@@ -44,7 +45,12 @@ const Page = () => {
         message: state.message,
         severity: state.success ? "success" : "error",
       });
-
+  
+      //  NEW: store userId in IndexedDB if available
+      if (state.success && state.userId) {
+        storeUserId("userId", state.userId); // ✅ Store it with key 'userId'
+      }
+  
       if (state.success && groupName) {
         setTimeout(() => {
           router.push(`/chat/${groupName}`);
