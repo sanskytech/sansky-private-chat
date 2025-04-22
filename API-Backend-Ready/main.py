@@ -108,8 +108,9 @@ def decrypt_with_aes(aes_key, encrypted_data):
 # Middleware to protect routes
 def token_required(f):
     def decorator(*args, **kwargs):
-        token = request.headers.get('x-access-token')
-        
+        token = request.headers.get('Authorization')
+        if token:
+            token = token.split(" ")[1]  # Split to get the token after "Bearer"
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
         
