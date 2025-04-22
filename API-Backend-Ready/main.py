@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from flask_cors import CORS
+from base64 import b64encode, b64decode
 
 
 # Create the Flask app
@@ -236,6 +237,78 @@ def create_user(current_user_id, current_group_name, current_name):
         return jsonify({"message": "User created", "user_id": current_user_id, "data": data}), 201
     else:
         return jsonify({"error": "Request must be JSON"}), 400
+
+
+
+##from here added routes for qrcode invitatoin
+
+# Temporary storage for used invite codes to prevent reuse
+used_invite_codes = set()
+
+
+@app.route('/invitation-code-generation', methods=['POST'])
+@token_required
+def invitation_code_generation(current_user_id, current_group_name, current_name):
+    timestamp = int(time.time())
+
+    # Prepare data to encrypt
+    payload = f"{current_user_id}||{current_group_name}||{timestamp}".encode()
+
+    # Generate AES key for this specific invite
+    aes_key = generate_aes_key()  # This can be made rotative in the future
+
+    # Encrypt payload
+    encrypted = encrypt_with_aes(payload, aes_key)
+
+    # Combine the AES key and encrypted data for decoding
+    combined = aes_key + encrypted
+
+    return jsonify({
+        "invitation_code": combined.hex()
+    }), 200
+
+
+@app.route('/invitation-code-check', methods=['POST'])
+def invitation_code_check():
+    data = request.get_json()
+
+    if "username" not in data or "invitation_code" not in data:
+        return jsonify({"error": "Username and invitation_code are required"}), 400
+
+    try:
+        code_bytes = bytes.fromhex(data["invitation_code"])
+        aes_key = code_bytes[:32]
+        encrypted_data = code_bytes[32:]
+
+        # Decrypt the invitation code
+        decrypted = decrypt_with_aes(aes_key, encrypted_data)
+        decoded_str = decrypted.decode()
+
+        inviter_id, group_name, timestamp_str = decoded_str.split("||")
+        timestamp = int(timestamp_str)
+
+        # Check expiration (5 minutes validity)
+        if time.time() - timestamp > 300:
+            return jsonify({"error": "Invitation code expired"}), 400
+
+        # Check one-time use
+        if data["invitation_code"] in used_invite_codes:
+            return jsonify({"error": "Invitation code already used"}), 400
+
+        used_invite_codes.add(data["invitation_code"])
+
+        # Simulate notification to inviter (could be a real event in future)
+        return jsonify({
+            "message": "Invitation code accepted. Permission request sent to inviter.",
+            "inviter_id": inviter_id,
+            "group_name": group_name,
+            "new_user": data["username"]
+        }), 200
+
+    except Exception as e:
+        print(f"Error during invitation check: {e}")
+        return jsonify({"error": "Invalid invitation code"}), 400
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
