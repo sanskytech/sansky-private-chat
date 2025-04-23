@@ -1,84 +1,101 @@
 'use client';
 
-import {  useEffect, useRef, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import QRCodeStyling from 'qr-code-styling';
-import { generateRandomKey } from '@/utils/utils';
+import { fetchInvitationCode } from '@/utils/api-qrcode-value';
+// import { generateRandomKey } from '@/utils/utils';
 
 type InviteDialogProps = {
   onInviteDialogClose?: () => void;
   open: boolean;
-} 
+};
 
-
-const InvitaDialog = ({onInviteDialogClose, open}:InviteDialogProps) => {
-  // const [open, setOpen] = useState(false); 
-
-  const qrRef = useRef<HTMLDivElement | null>(null); // Reference for the QR code container
-  const [invitationCode, setInvitationCode] = useState(generateRandomKey()); // Example code (this could be fetched from a backend)
+const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
+  const qrRef = useRef<HTMLDivElement | null>(null);
+  const [invitationCode, setInvitationCode] = useState('');
 
   useEffect(() => {
-    if (!open) return; // Prevent issues if qrRef is null or dialog is closed
+    if (!open) return;
 
-    const timer = setTimeout(() => {
-      console.log('Generating QR code...');
-      
-      const qrCode = new QRCodeStyling({
-        width: 200,
-        height: 200,
-        data: invitationCode, // This is the text inside the QR code
-        dotsOptions: {
-          color: '#2F98BC', // QR Code color
-          type: 'rounded',
-        },
-        backgroundOptions: {
-          color: '#ffffff',
-        },
-        imageOptions: {
-          crossOrigin: 'anonymous',
-          margin: 10,
-        },
+    fetchInvitationCode()
+      .then((code) => {
+        setInvitationCode(code);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch invitation code:', error);
       });
-      if (qrRef.current === null) return; // Check if qrRef is not null
-      qrCode.append(qrRef.current); // Append the QR code (this renders it)
+  }, [open]);
 
-    }, 1000); // Delay by 1 second
+  useEffect(() => {
+    if (!open || !invitationCode || !qrRef.current) return;
 
-    return () => clearTimeout(timer); // 
+    const qrCode = new QRCodeStyling({
+      width: 200,
+      height: 200,
+      data: invitationCode,
+      dotsOptions: {
+        color: '#2F98BC',
+        type: 'rounded',
+      },
+      backgroundOptions: {
+        color: '#ffffff',
+      },
+      imageOptions: {
+        crossOrigin: 'anonymous',
+        margin: 10,
+      },
+    });
 
-  }, [open, invitationCode]); 
+    qrRef.current.innerHTML = '';
+    qrCode.append(qrRef.current);
 
+    return () => {
+      if (qrRef.current) {
+        qrRef.current.innerHTML = '';
+      }
+    };
+  }, [open, invitationCode]);
 
   const handleClose = () => {
-    // setOpen(false); // Close the dialog
-    if (onInviteDialogClose !== undefined) {
+    if (onInviteDialogClose) {
       onInviteDialogClose();
     }
   };
 
-  const handleRefresh = () => {
-    // clear the qrRef Div
+  const handleRefresh = async () => {
     if (qrRef.current) {
       qrRef.current.innerHTML = '';
     }
-    // Refresh the invitation code
-    setInvitationCode(generateRandomKey());
-
+    try {
+      const code = await fetchInvitationCode();
+      setInvitationCode(code);
+    } catch (error) {
+      console.error('Error refreshing code:', error);
+    }
   };
 
   const handleCopyButton = () => {
     if (typeof window !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(invitationCode)
+      navigator.clipboard
+        .writeText(invitationCode)
         .then(() => alert('Code copied to clipboard!'))
         .catch((error) => console.error('Failed to copy:', error));
     } else {
-      // Fallback method for unsupported environments
       const textArea = document.createElement('textarea');
       textArea.value = invitationCode;
       document.body.appendChild(textArea);
       textArea.select();
-      document.execCommand('copy'); // Old-school method
+      document.execCommand('copy');
       document.body.removeChild(textArea);
       alert('Code copied to clipboard!');
     }
@@ -92,7 +109,8 @@ const InvitaDialog = ({onInviteDialogClose, open}:InviteDialogProps) => {
     };
 
     if (navigator.share) {
-      navigator.share(shareData)
+      navigator
+        .share(shareData)
         .then(() => console.log('Shared successfully'))
         .catch((error) => console.error('Error sharing:', error));
     } else {
