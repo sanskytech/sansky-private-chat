@@ -13,13 +13,17 @@ export async function getCookie(name: string) {
   return cookieValue;
 }
 
+
+
 const api = axios.create({
     baseURL: process.env.API_URL, // Ensure this is set in your environment variables
     withCredentials: true,           // Ensure cookies (including HTTP-only) are sent
   });
 
 
-
+interface InvitationCodeResponse {
+  invitation_code: string;
+}
 
 interface CreateRoomResponse {
   encrypted_data: string;
@@ -32,6 +36,56 @@ interface ActionState {
   token?: string;
   userId?: string;
 }
+
+
+export async function InvitationCodeAction(
+  prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const cookieValue = await getCookie("auth_token");
+
+  try {
+    const response = await api.post<InvitationCodeResponse>(
+      "/invitation-code-generation",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${cookieValue}`,
+        },
+      }
+    );
+
+    const data = response.data;
+
+    if (response.status == 200) {
+      const inviteCode = data.invitation_code;
+      console.log("Invitation Code:", inviteCode);
+
+      return {
+        success: true,
+        message: "The invitation code was received successfully.",
+        // Optionally return the code as token:
+        token: inviteCode,
+      };
+    } else {
+      return {
+        success: false,
+        message: "The invitation code was not received.",
+      };
+    }
+
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    const errorMessage =
+      axiosError.response?.data?.message || axiosError.message || "Something went wrong";
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+}
+
 
 
 
@@ -55,7 +109,9 @@ export async function createRoomAction(
         },
       }
     );
-    
+    console.log(getCookie("auth_token"))
+    const mymyCookie = await getCookie("auth_token");
+    console.log("MY COOKIE:", mymyCookie);
 
     const data = response.data;
     console.log("fuck is that working?")

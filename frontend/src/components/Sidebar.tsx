@@ -7,7 +7,16 @@ import GroupBand from "@/components/GroupBand";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Button from '@/components/Button';
-import InviteDialog from "./InviteDialog"
+import InviteDialog from "./InviteDialog";
+import { InvitationCodeAction } from "@/actions/action"
+//import { useActionState, useTransition, useEffect, useState, forwardRef } from "react";
+
+//const initialState= {
+ //   success: false,
+ //   message: "",
+ //   token: undefined
+//};
+
 
 type SidebarProps = {
     showCollapsedIcon:boolean;
@@ -22,9 +31,10 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
     const [isInvited, setIsInvited] = useState(false);
   
   
-    const handleInviteClick = () => {
+    const handleInviteClick = async(formData: FormData) => {
       // router.push("/invitation-code");
       setIsInvited(true);
+      await InvitationCodeAction(formData);
     };
 
     const onInviteDialogClose = () => {
@@ -74,11 +84,14 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
         {/* Bottom Buttons */}
         {!isCollapsed && (
           <div className={`flex flex-col gap-2 ${isCollapsed ? "" : " " } `}>
-            <Button 
-              label="Invite"
-              className="text-white font-bold py-1.5 px-4 rounded-xl cursor-pointer bg-[#2F98BC]"
-              onClick={handleInviteClick}
-            />
+            <form action={handleInviteClick}>
+              <Button
+                type="submit" 
+                label="Invite"
+                className="text-white font-bold py-1.5 px-4 rounded-xl cursor-pointer bg-[#2F98BC]"
+                //onClick={handleInviteClick}
+              />
+             </form>
             <Button 
               className="text-white font-bold py-1.5 px-4 rounded-xl cursor-pointer bg-[#2F98BC]"
               label="Logout"
