@@ -9,11 +9,11 @@ import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/navigation";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import { useParams } from 'next/navigation';
-import { InvitationCodeAction } from "@/actions/action";
+
 
 const ChatPage = () => {
     // const [isSidebarOpened,SetSidebarOpen] = useState(false);
-    const [state, formAction] = useActionState(InvitationCodeAction,initialState );
+    
     const router = useRouter();
     const params= useParams();
     const groupName=params?.id;

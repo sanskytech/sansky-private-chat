@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import QRCodeStyling from 'qr-code-styling';
-import { fetchInvitationCode } from '@/utils/api-qrcode-value';
+
 // import { generateRandomKey } from '@/utils/utils';
 
 type InviteDialogProps = {
@@ -27,13 +27,7 @@ const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
   useEffect(() => {
     if (!open) return;
 
-    fetchInvitationCode()
-      .then((code) => {
-        setInvitationCode(code);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch invitation code:', error);
-      });
+    
   }, [open]);
 
   useEffect(() => {
@@ -77,8 +71,7 @@ const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
       qrRef.current.innerHTML = '';
     }
     try {
-      const code = await fetchInvitationCode();
-      setInvitationCode(code);
+      
     } catch (error) {
       console.error('Error refreshing code:', error);
     }
