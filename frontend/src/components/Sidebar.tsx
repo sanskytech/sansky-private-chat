@@ -9,13 +9,13 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Button from '@/components/Button';
 import InviteDialog from "./InviteDialog";
 import { InvitationCodeAction } from "@/actions/action"
-//import { useActionState, useTransition, useEffect, useState, forwardRef } from "react";
+import { useActionState, useTransition, useEffect, forwardRef } from "react";
 
-//const initialState= {
- //   success: false,
- //   message: "",
- //   token: undefined
-//};
+const initialState= {
+   success: false,
+    message: "",
+    token: undefined
+};
 
 
 type SidebarProps = {

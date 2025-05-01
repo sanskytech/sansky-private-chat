@@ -18,6 +18,7 @@ import QRCodeStyling from 'qr-code-styling';
 type InviteDialogProps = {
   onInviteDialogClose?: () => void;
   open: boolean;
+  invitationcode: string
 };
 
 const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
