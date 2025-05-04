@@ -13,6 +13,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import QRCodeStyling from 'qr-code-styling';
 
+
 // import { generateRandomKey } from '@/utils/utils';
 
 type InviteDialogProps = {
@@ -21,9 +22,16 @@ type InviteDialogProps = {
   invitationcode: string
 };
 
-const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
+const InviteDialog = ({ onInviteDialogClose, open, invitationcode }: InviteDialogProps) => {
   const qrRef = useRef<HTMLDivElement | null>(null);
-  const [invitationCode, setInvitationCode] = useState('');
+  
+  
+
+
+  useEffect(()=>{
+    console.log("recieved qurcode value",invitationcode);
+    
+  },[invitationcode]);
 
   useEffect(() => {
     if (!open) return;
@@ -32,34 +40,38 @@ const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
   }, [open]);
 
   useEffect(() => {
-    if (!open || !invitationCode || !qrRef.current) return;
+    if (!open || !invitationcode || !qrRef.current) return;
 
-    const qrCode = new QRCodeStyling({
-      width: 200,
-      height: 200,
-      data: invitationCode,
-      dotsOptions: {
-        color: '#2F98BC',
-        type: 'rounded',
-      },
-      backgroundOptions: {
-        color: '#ffffff',
-      },
-      imageOptions: {
-        crossOrigin: 'anonymous',
-        margin: 10,
-      },
-    });
 
-    qrRef.current.innerHTML = '';
-    qrCode.append(qrRef.current);
+    const timeout = setTimeout(() => { // ✅ NEW: Delay to ensure DOM is ready
+      const qrCode = new QRCodeStyling({
+        width: 200,
+        height: 200,
+        data: invitationcode,
+        dotsOptions: {
+         color: '#2F98BC',
+         type: 'rounded',
+       },
+       backgroundOptions: {
+          color: '#ffffff',
+        },
+        imageOptions: {
+         crossOrigin: 'anonymous',
+         margin: 10,
+       },
+      });
+
+      qrRef.current!.innerHTML = '';
+      qrCode.append(qrRef.current!);
+      }, 100); // ✅ NEW: 100ms delay
 
     return () => {
+      clearTimeout(timeout); // ✅ NEW: cleanup timeou
       if (qrRef.current) {
         qrRef.current.innerHTML = '';
       }
     };
-  }, [open, invitationCode]);
+  }, [open, invitationcode]);
 
   const handleClose = () => {
     if (onInviteDialogClose) {
@@ -81,12 +93,12 @@ const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
   const handleCopyButton = () => {
     if (typeof window !== 'undefined' && navigator.clipboard) {
       navigator.clipboard
-        .writeText(invitationCode)
+        .writeText(invitationcode)
         .then(() => alert('Code copied to clipboard!'))
         .catch((error) => console.error('Failed to copy:', error));
     } else {
       const textArea = document.createElement('textarea');
-      textArea.value = invitationCode;
+      textArea.value = invitationcode;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand('copy');
@@ -98,7 +110,7 @@ const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
   const handleShareButton = () => {
     const shareData = {
       title: 'Join SanskyChat',
-      text: `Hey! Join me on SanskyChat with this code: ${invitationCode}`,
+      text: `Hey! Join me on SanskyChat with this code: ${invitationcode}`,
       url: `${window.location.origin}/join`,
     };
 
@@ -165,4 +177,4 @@ const InvitaDialog = ({ onInviteDialogClose, open }: InviteDialogProps) => {
   );
 };
 
-export default InvitaDialog;
+export default InviteDialog;

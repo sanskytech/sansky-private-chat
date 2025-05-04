@@ -29,16 +29,20 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
     const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isInvited, setIsInvited] = useState(false);
-  
+    
+    const [inviteCode, setInviteCode] = useState("");
   
     const handleInviteClick = async(formData: FormData) => {
-      // router.push("/invitation-code");
       setIsInvited(true);
-      await InvitationCodeAction(formData);
+      const result=await InvitationCodeAction({ success: false, message: "", token: undefined }, formData);
+      if (result.success && result.token){
+        setInviteCode(result.token);
+      } else {alert("Failed to generate invitation code: " + result.message);}
     };
 
     const onInviteDialogClose = () => {
       setIsInvited(false);
+      setInviteCode(""); //reset
     }
   
     const toggleSidebar = () => setIsCollapsed(!isCollapsed);
@@ -47,7 +51,7 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
 
     return (
       <>
-        <InviteDialog onInviteDialogClose={onInviteDialogClose} open={isInvited}/>
+        <InviteDialog onInviteDialogClose={onInviteDialogClose} open={isInvited} invitationcode={inviteCode}/>
         <div
         className={`${isCollapsed ? ' w-full md:w-0' : '  '} ${classNames} transition-all duration-300 bg-gray-200 h-screen flex flex-col justify-between p-4 relative overflow-hidden`}
       >
