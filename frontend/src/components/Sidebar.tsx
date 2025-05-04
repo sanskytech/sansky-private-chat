@@ -9,7 +9,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Button from '@/components/Button';
 import InviteDialog from "./InviteDialog";
 import { InvitationCodeAction } from "@/actions/action"
-import { useActionState, useTransition, useEffect, forwardRef } from "react";
+
 
 const initialState= {
    success: false,
@@ -34,11 +34,13 @@ const Sidebar = ({showCollapsedIcon, classNames}:SidebarProps) =>{
   
     const handleInviteClick = async(formData: FormData) => {
       setIsInvited(true);
-      const result=await InvitationCodeAction({ success: false, message: "", token: undefined }, formData);
+      const result = await InvitationCodeAction(initialState, formData);
       if (result.success && result.token){
         setInviteCode(result.token);
-      } else {alert("Failed to generate invitation code: " + result.message);}
-    };
+      } else {
+        alert("Failed to generate invitation code: " + result.message);
+      }
+    }
 
     const onInviteDialogClose = () => {
       setIsInvited(false);

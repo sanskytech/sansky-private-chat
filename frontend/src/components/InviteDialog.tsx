@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -28,10 +28,10 @@ const InviteDialog = ({ onInviteDialogClose, open, invitationcode }: InviteDialo
   
 
 
-  useEffect(()=>{
-    console.log("recieved qurcode value",invitationcode);
+  // useEffect(()=>{
+  //   console.log("recieved qurcode value",invitationcode);
     
-  },[invitationcode]);
+  // },[invitationcode]);
 
   useEffect(() => {
     if (!open) return;
@@ -40,8 +40,8 @@ const InviteDialog = ({ onInviteDialogClose, open, invitationcode }: InviteDialo
   }, [open]);
 
   useEffect(() => {
-    if (!open || !invitationcode || !qrRef.current) return;
-
+    if (!open || !invitationcode) return;
+    
 
     const timeout = setTimeout(() => { // ✅ NEW: Delay to ensure DOM is ready
       const qrCode = new QRCodeStyling({
@@ -68,6 +68,7 @@ const InviteDialog = ({ onInviteDialogClose, open, invitationcode }: InviteDialo
     return () => {
       clearTimeout(timeout); // ✅ NEW: cleanup timeou
       if (qrRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         qrRef.current.innerHTML = '';
       }
     };
@@ -82,6 +83,7 @@ const InviteDialog = ({ onInviteDialogClose, open, invitationcode }: InviteDialo
   const handleRefresh = async () => {
     if (qrRef.current) {
       qrRef.current.innerHTML = '';
+      
     }
     try {
       

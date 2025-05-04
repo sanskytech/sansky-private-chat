@@ -39,8 +39,6 @@ interface ActionState {
 
 
 export async function InvitationCodeAction(
-  prevState: ActionState,
-  formData: FormData
 ): Promise<ActionState> {
   const cookieValue = await getCookie("auth_token");
 
@@ -59,7 +57,6 @@ export async function InvitationCodeAction(
 
     if (response.status == 200) {
       const inviteCode = data.invitation_code;
-      console.log("Invitation Code:", inviteCode);
 
       return {
         success: true,
@@ -109,12 +106,9 @@ export async function createRoomAction(
         },
       }
     );
-    console.log(getCookie("auth_token"))
     const mymyCookie = await getCookie("auth_token");
-    console.log("MY COOKIE:", mymyCookie);
 
     const data = response.data;
-    console.log("fuck is that working?")
 
     if (response.status == 200) {
 
@@ -135,8 +129,6 @@ export async function createRoomAction(
 
         // create public and private key
         const { privateKey, publicKey } = generateECDHKeyPair();
-        console.log("Private Key:", privateKey);
-        console.log("Public Key:", publicKey);
 
         // create a common key on the browser and store it in the indexedDB
         // const commonKey = crypto.getRandomValues(new Uint8Array(16));
