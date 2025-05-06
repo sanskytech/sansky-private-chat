@@ -21,6 +21,14 @@ const api = axios.create({
   });
 
 
+interface InvitationCodeCheckResponse{
+  inviter_id: string;
+  group_name: string;
+  new_user: string;
+  message: string;
+
+}
+
 interface InvitationCodeResponse {
   invitation_code: string;
 }
@@ -36,6 +44,64 @@ interface ActionState {
   token?: string;
   userId?: string;
 }
+
+export async function InvitationCodeCheckAction(
+  prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const username=formData.get("username") as string;
+  const invitation_code=formData.get("invitecode") as string;
+
+  try {
+    const response=await api.post<InvitationCodeCheckResponse>(
+      "/invitation-code-check",
+      {
+        username: username,
+        invitation_code: invitation_code,
+      },
+      {
+        headers:{
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+
+    const data=response.data;
+    if (response.status == 200){
+      const newUserName=data.new_user;
+      const groupName=data.group_name;
+      const inviterid=data.inviter_id;
+      const message=data.message;
+      return {
+        success: true,
+        message: message,
+        inviterGroup: groupName,
+        inviterId: inviterid,
+        newusername: newUserName,
+
+      };
+      
+    }
+    else {
+      return {
+        success:false,
+        message: response.statusText,
+      };
+    }
+  } catch (error:unknown){
+    const axiosError= error as AxiosError<{ message?: string }>;
+    const errorMessage= axiosError.response?.data?.message || axiosError.message ||"Something went Wrong";
+  }
+  return {
+    success: false,
+    message: errorMessage,
+  };
+}
+
+
+
+
 
 
 export async function InvitationCodeAction(

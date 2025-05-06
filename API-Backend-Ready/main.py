@@ -300,7 +300,7 @@ def invitation_code_check():
 
         # Simulate notification to inviter (could be a real event in future)
         return jsonify({
-            "message": "Invitation code accepted. Permission request sent to inviter.",
+            "message": f"{data['username']}'s Invitation code accepted. Permission request sent to inviter.",
             "inviter_id": inviter_id,
             "group_name": group_name,
             "new_user": data["username"]
