@@ -43,6 +43,9 @@ interface ActionState {
   message: string;
   token?: string;
   userId?: string;
+  inviterGroup?: string;
+  inviterId?: string;
+  newusername?: string;
 }
 
 export async function InvitationCodeCheckAction(
@@ -68,17 +71,28 @@ export async function InvitationCodeCheckAction(
 
 
     const data=response.data;
+    
     if (response.status == 200){
+      console.log("InvitationCodeCheckResponse from backend:", data.new_user)
       const newUserName=data.new_user;
       const groupName=data.group_name;
       const inviterid=data.inviter_id;
       const message=data.message;
+      console.log("✅ Logging extracted values:", {
+        newUserName,
+        groupName,
+        inviterid,
+        message,
+      });
+    
       return {
         success: true,
         message: message,
         inviterGroup: groupName,
         inviterId: inviterid,
         newusername: newUserName,
+
+        
 
       };
       
@@ -92,11 +106,13 @@ export async function InvitationCodeCheckAction(
   } catch (error:unknown){
     const axiosError= error as AxiosError<{ message?: string }>;
     const errorMessage= axiosError.response?.data?.message || axiosError.message ||"Something went Wrong";
+
+    return {
+      success: false,
+      message: errorMessage,
+    };
   }
-  return {
-    success: false,
-    message: errorMessage,
-  };
+  
 }
 
 
@@ -228,5 +244,4 @@ export async function createRoomAction(
     };
   }
 }
-
 
